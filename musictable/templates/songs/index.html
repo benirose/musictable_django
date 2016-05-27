@@ -1,0 +1,56 @@
+{% extends "layout.html" %}
+
+{% block pageContent %}
+
+<form method="post" class="form-inline">
+	{% csrf_token %}
+  <div class="form-group">
+    <input type="text" class="form-control" id="search" name="search">
+  </div>
+  <button type="submit" class="btn btn-primary">Search</button>
+</form>
+
+<table class="table table-striped table-condensed">
+	<thead>
+		<tr>
+			<th>Title</th>
+			<th>Artist</th>
+			<th>First Line</th>
+			<th>&nbsp</th>
+		</tr>
+	</thead>
+
+	<tbody>
+	{% for song in song_list %}
+		<tr>
+			<td>{{ song.title }}</td>
+			<td>{{ song.author }}</td>
+			<td>{{ song.first_line }}</td>
+			<td><a href="{% url 'detail' song.id %}">View</a></td>
+		</tr>
+	{% endfor %}
+	</tbody>
+
+</table>
+
+{% if is_paginated %}
+<nav>
+  <ul class="pagination">
+    <li>
+      {% if page_obj.has_previous %}<a href="{% url 'index' %}?page={{ page_obj.previous_page_number }}" aria-label="Previous">{% endif %}
+        <span aria-hidden="true">&laquo;</span>
+      {% if page_obj.has_previous %}</a>{% endif %}
+    </li>
+		{% for page in page_range %}
+	    <li{% if page_obj.number = page %} class="active"{% endif %}><a href="{% url 'index' %}?page={{ page }}">{{ page }}</a></li>
+	  {% endfor %}
+    <li>
+      {% if page_obj.has_next %}<a href="{% url 'index' %}?page={{ page_obj.next_page_number }}" aria-label="Next">{% endif %}
+        <span aria-hidden="true">&raquo;</span>
+      {% if page_obj.has_next %}</a>{% endif %}
+    </li>
+  </ul>
+</nav>
+{% endif %}
+
+{% endblock %}
